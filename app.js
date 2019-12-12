@@ -4,6 +4,7 @@ const cookieParser = require('cookie-parser')
 
 const routes = require('./routes')
 
+app.use(express.json())
 app.use(cookieParser())
 
 app.use(routes)

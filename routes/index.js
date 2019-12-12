@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 
 const user = require('./user')
+const post = require('./post')
 
 router.get('/login', (req, res, next) => { 
     res
@@ -11,5 +12,6 @@ router.get('/login', (req, res, next) => {
 })
     
 router.use('/user', user)
+router.use('/post', post)
 
 module.exports = router

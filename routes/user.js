@@ -1,4 +1,6 @@
 const express = require('express')
+const validator = require('express-validator')
+const { validationMiddleware }= require('../controllers/validators')
 const router = express.Router()
 const { checkUser } = require('../controllers/auth')
 const json = require('../services/json')
@@ -16,7 +18,9 @@ router.get('/', (req, res, next) => {
   res.status(200).json({name:"유저목록"})
 })
 
-router.get('/:id', (req, res, next) => {
+router.get('/:id', validationMiddleware(
+  validator.param('id').toInt().isInt(),
+), (req, res, next) => {
   const id = req.params.id
   console.log(id)
   res.status(200).json({ 
