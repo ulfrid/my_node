@@ -1,0 +1,64 @@
+const express = require('express')
+const app = express()
+const cookieParser = require('cookie-parser')
+
+app.use(cookieParser())
+
+app.get('/login', (req, res, next) => { 
+  res
+    .cookie('usertype', 1)
+    .status(200)
+    .json({message:'SUCCESS'})
+})
+
+const checkUser = (req, res, next) => {
+  if(req.cookies.usertype === '1') return next()
+  const err = new Error('권한이 없네요')
+  err.status = 401
+  next(err)
+}
+
+// app.use((req, res, next) => {
+//   if(req.cookies.usertype === '1') return next()
+//   const err = new Error('권한이 없네요')
+//   err.status = 401
+//   next(err)
+// })
+app.get('/user', checkUser, (req, res, next) => {
+  const page = req.query.page
+  console.log(req.query)
+  res.status(200).json({name:"유저목록"})
+})
+app.get('/user/:id', (req, res, next) => {
+  const id = req.params.id
+
+  console.log(id)
+
+  res.status(200).json({ 
+      name: '특정 유저',
+      id  
+  })
+})
+app.use((req, res, next) => {
+  const err = new Error('존재하지 않는 URL 입니다.')
+  err.status = 404
+  next(err)
+  // res.status(404).json({
+  //   message: '존재하지 않는 url 입니다'
+  // })
+})
+
+app.use((err, req, res, next) => {
+  console.log(err)
+  res.status(err.status || 500).json({
+    message: err.message || '에러가 발생했습니다.',
+  })
+})
+//app.get()  // <---라우터
+//app.post() // <---라우터
+//app.use()  // <---라우터
+// 복잡한 경로를 한번에 정리할때, 보안에 필요할때
+
+//app.all()  // <---라우터
+//모든 http 메서드를 지원함
+module.exports = app
